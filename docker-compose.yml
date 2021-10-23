@@ -1,0 +1,21 @@
+version: "3.6"
+
+services:
+  pipewire:
+    #image: mgoltzsche/pipewire:latest
+    build:
+      context: .
+    environment:
+      PIPEWIRE_SOUNDCARD: "0"
+      #DBUS_SYSTEM_BUS_ADDRESS: unix:path=/host/run/dbus/system_bus_socket
+    network_mode: host
+    restart: unless-stopped
+    # Might be required on a raspberrypi when using alsa directly
+    privileged: true
+    devices:
+    - "/dev/snd:/dev/snd"
+    volumes:
+    - type: bind
+      source: /run
+      target: /run
+    #user: ${UID:-1000}:${UID:-1000}
