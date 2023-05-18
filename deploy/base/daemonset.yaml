@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: pipewire # kpt-set: ${name}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: pipewire
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: "100%"
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: pipewire
+    spec:
+      serviceAccountName: pipewire
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 1
+      containers:
+      - name: pipewire
+        image: ghcr.io/mgoltzsche/pipewire:0.0.1 # kpt-set: ${image}:${version}
+        env:
+        - name: PIPEWIRE_K8S_SERVICE
+          value: pipewire
+        resources:
+          limits:
+            cpu: 200m
+            memory: 64Mi
+          requests:
+            cpu: 100m
+            memory: 32Mi
+        securityContext:
+          privileged: true
+          runAsUser: 0
+          runAsGroup: 29
+        volumeMounts:
+        - name: dev-snd
+          mountPath: /dev/snd
+        - name: run
+          mountPath: /host/run
+        - name: etc
+          mountPath: /host/etc
+          readOnly: true
+      volumes:
+      - name: dev-snd
+        hostPath:
+          path: /dev/snd
+          type: Directory
+      - name: run
+        hostPath:
+          path: /run
+      - name: etc
+        hostPath:
+          path: /etc
