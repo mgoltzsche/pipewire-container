@@ -1,19 +1,18 @@
-ARG ZITA_RESAMPLER_VERSION=1.10.1
+ARG ZITA_RESAMPLER_VERSION=1.11.2
 
-FROM alpine:3.18 AS zita-njbridge-build
+FROM alpine:3.19 AS zita-njbridge-build
 RUN apk add --update --no-cache tar xz make gcc g++ musl-dev libstdc++ clang jack-dev
 ARG ZITA_RESAMPLER_VERSION
 RUN set -eux; \
 	mkdir -p /zita-resampler; \
 	cd /zita-resampler; \
 	wget -O - https://kokkinizita.linuxaudio.org/linuxaudio/downloads/zita-resampler-${ZITA_RESAMPLER_VERSION}.tar.xz | tar -xJf -
+# TODO: wait for alpine package to become available
 WORKDIR /zita-resampler
 RUN set -eux; \
 	cd zita-resampler-$ZITA_RESAMPLER_VERSION/source; \
-	make; \
-	printf '#!/bin/sh\ntrue' >/usr/local/bin/ldconfig; \
-	chmod +x /usr/local/bin/ldconfig; \
-	make install LIBDIR=/usr/local/lib
+	make CPPFLAGS='-I. -I/usr/lib/llvm17/lib/clang/17/include '; \
+	make install PREFIX=/usr/local
 ARG ZITA_NJBRIDGE_VERSION=0.4.8
 RUN set -eux; \
 	mkdir -p /zita-njbridge; \
@@ -22,10 +21,11 @@ RUN set -eux; \
 WORKDIR /zita-njbridge
 RUN set -eux; \
 	cd zita-njbridge-$ZITA_NJBRIDGE_VERSION/source; \
+	cp /usr/local/lib*/* /usr/local/lib/; \
 	make; \
 	make install
 
-FROM alpine:3.18
+FROM alpine:3.19
 RUN apk add --update --no-cache pipewire pipewire-jack pipewire-pulse alsa-utils
 ARG ZITA_RESAMPLER_VERSION
 #RUN set -ex; \
