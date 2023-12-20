@@ -1,7 +1,9 @@
 apiVersion: apps/v1
 kind: DaemonSet
-metadata:
+metadata: # kpt-merge: /pipewire
   name: pipewire # kpt-set: ${name}
+  annotations:
+    internal.kpt.dev/upstream-identifier: 'apps|DaemonSet|default|pipewire'
 spec:
   template:
     spec:

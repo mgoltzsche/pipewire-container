@@ -4,9 +4,9 @@ metadata: # kpt-merge: /${APP_NAME:=app}
   name: ${APP_NAME:=app}
   annotations:
     internal.kpt.dev/upstream-identifier: 'apps.kubemate.mgoltzsche.github.com|AppConfigSchema|default|${APP_NAME:=app}'
-spec:
 
 # TODO: define the parameters for your app here
+#spec:
 #  params:
 #  - name: EXAMPLE_VAR
 #    type: enum # password|string|enum|number|boolean
