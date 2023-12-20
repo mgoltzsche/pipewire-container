@@ -9,5 +9,5 @@ metadata: # kpt-merge: /app-config
     internal.kpt.dev/upstream-identifier: '|ConfigMap|default|app-config'
 data:
   name: pipewire
-  version: "0.0.1"
+  version: "0.1.0"
   image: ghcr.io/mgoltzsche/pipewire

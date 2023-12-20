@@ -23,7 +23,7 @@ spec:
       terminationGracePeriodSeconds: 1
       containers:
       - name: pipewire
-        image: ghcr.io/mgoltzsche/pipewire:0.0.1 # kpt-set: ${image}:${version}
+        image: ghcr.io/mgoltzsche/pipewire:0.1.0 # kpt-set: ${image}:${version}
         env:
         - name: PIPEWIRE_K8S_SERVICE
           value: pipewire
