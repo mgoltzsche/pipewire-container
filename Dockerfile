@@ -26,7 +26,7 @@ RUN set -eux; \
 	make install
 
 FROM alpine:3.19
-RUN apk add --update --no-cache pipewire pipewire-jack pipewire-pulse alsa-utils
+RUN apk add --update --no-cache pipewire pipewire-jack pipewire-pulse alsa-utils wireplumber-logind
 ARG ZITA_RESAMPLER_VERSION
 #RUN set -ex; \
 #	delgroup audio; \
@@ -42,7 +42,8 @@ COPY entrypoint.sh /
 # See https://gitlab.freedesktop.org/pipewire/pipewire/-/wikis/Config-JACK
 ENV PIPEWIRE_LATENCY="256/48000 jack_lsp" \
     PIPEWIRE_PROPS="media.class=Audio/Sink" \
-    PIPEWIRE_RUNTIME_DIR="/var/lib/pipewire"
+    PIPEWIRE_RUNTIME_DIR="/var/lib/pipewire" \
+    PULSE_RUNTIME_PATH=/run/pulse
 #USER pipewire:audio
 ENTRYPOINT [ "/entrypoint.sh" ]
 
